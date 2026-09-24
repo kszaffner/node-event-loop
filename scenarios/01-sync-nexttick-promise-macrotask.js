@@ -1,27 +1,27 @@
 'use strict';
 
-// Pokazuje podstawową kolejność wykonania w Node.js:
-// 1. kod synchroniczny (call stack)
-// 2. kolejka process.nextTick
-// 3. kolejka mikrozadań (Promise)
-// 4. dopiero potem event loop (tu: faza Timers)
+// Shows the basic execution order in Node.js:
+// 1. synchronous code (call stack)
+// 2. process.nextTick queue
+// 3. microtask queue (Promise)
+// 4. only then the event loop (here: the Timers phase)
 //
-// Oczekiwana kolejność logów: SYNC, SYNC, NEXTTICK, MICROTASK, TIMERS.
+// Expected log order: SYNC, SYNC, NEXTTICK, MICROTASK, TIMERS.
 
 const { log } = require('../lib/logger');
 
-log('SYNC', 'Start skryptu');
+log('SYNC', 'Script start');
 
 setTimeout(() => {
-  log('TIMERS', 'setTimeout callback (faza Timers, makrozadanie)');
+  log('TIMERS', 'setTimeout callback (Timers phase, macrotask)');
 }, 0);
 
 Promise.resolve().then(() => {
-  log('MICROTASK', 'Promise.then callback (mikrozadanie)');
+  log('MICROTASK', 'Promise.then callback (microtask)');
 });
 
 process.nextTick(() => {
   log('NEXTTICK', 'process.nextTick callback');
 });
 
-log('SYNC', 'Koniec kodu synchronicznego');
+log('SYNC', 'End of synchronous code');

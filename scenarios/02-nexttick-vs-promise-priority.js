@@ -1,10 +1,10 @@
 'use strict';
 
-// Pokazuje, że kolejka process.nextTick jest zawsze w pełni opróżniana
-// PRZED kolejką mikrozadań Promise — to dwie osobne kolejki, nie jedna.
+// Shows that the process.nextTick queue is always fully drained BEFORE
+// the Promise microtask queue — these are two separate queues, not one.
 //
-// Oczekiwana kolejność: NEXTTICK #1, NEXTTICK #2, MICROTASK #1, MICROTASK #2
-// (a nie na przemian, mimo że dodajemy je na przemian w kodzie).
+// Expected order: NEXTTICK #1, NEXTTICK #2, MICROTASK #1, MICROTASK #2
+// (not alternating, even though we add them alternately in the code).
 
 const { log } = require('../lib/logger');
 

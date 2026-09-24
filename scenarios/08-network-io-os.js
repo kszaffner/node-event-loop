@@ -1,12 +1,12 @@
 'use strict';
 
-// Pokazuje, że I/O sieciowe (TCP) NIE korzysta z thread poola libuv —
-// jest obsługiwane bezpośrednio przez mechanizmy systemu operacyjnego
-// (epoll/kqueue/IOCP), które skalują się do tysięcy jednoczesnych
-// połączeń, a nie tylko do rozmiaru puli wątków (domyślnie 4).
-// Odpalamy 8 równoległych połączeń do lokalnego serwera i pokazujemy,
-// że wszystkie kończą się mniej więcej w tym samym czasie — bez efektu
-// kolejkowania, jaki zobaczymy w scenariuszu 14 dla operacji na thread poolu.
+// Shows that network I/O (TCP) does NOT use libuv's thread pool — it's
+// handled directly by OS mechanisms (epoll/kqueue/IOCP), which scale to
+// thousands of concurrent connections instead of being limited to the
+// thread pool size (default 4). We open 8 parallel connections to a
+// local server and show that they all finish at roughly the same time —
+// no queueing effect like the one we'll see in scenario 14 for thread
+// pool operations.
 
 const net = require('node:net');
 const { log } = require('../lib/logger');
@@ -19,13 +19,13 @@ const server = net.createServer((socket) => {
 
 server.listen(0, () => {
   const { port } = server.address();
-  log('SYNC', `Serwer nasłuchuje na porcie ${port}, otwieramy ${CONNECTIONS} połączeń naraz`);
+  log('SYNC', `Server listening on port ${port}, opening ${CONNECTIONS} connections at once`);
 
   let done = 0;
   for (let i = 1; i <= CONNECTIONS; i += 1) {
     const client = net.connect(port);
     client.on('data', () => {
-      log('POLL', `Połączenie #${i} zakończone (OS async I/O, nie thread pool)`);
+      log('POLL', `Connection #${i} finished (OS async I/O, not thread pool)`);
       done += 1;
       if (done === CONNECTIONS) {
         server.close();

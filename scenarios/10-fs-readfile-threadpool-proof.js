@@ -1,28 +1,28 @@
 'use strict';
 
-// Dowód, że fs.readFile() wykonuje faktyczną pracę na WĄTKU z thread poola,
-// a nie na głównym wątku JS: startujemy odczyt pliku, a zaraz potem
-// blokujemy główny wątek pętlą synchroniczną na ~200ms. Jeśli odczyt
-// pliku zdąży się zakończyć W TLE podczas blokady (co przy małym pliku
-// jest niemal pewne), to jego callback wykona się niemal NATYCHMIAST
-// po zakończeniu pętli — a nie 200ms+czas_odczytu później. To pokazuje,
-// że odczyt działał współbieżnie z blokującym kodem JS, czyli na
-// osobnym wątku z puli.
+// Proof that fs.readFile() does its actual work on a thread pool THREAD,
+// not on the main JS thread: we start a file read, then immediately
+// block the main thread with a synchronous loop for ~200ms. If the file
+// read manages to finish in the background during the block (which,
+// for a small file, is almost certain), its callback will run almost
+// IMMEDIATELY after the loop ends — not 200ms+read_time later. This
+// shows the read ran concurrently with the blocking JS code, i.e. on a
+// separate thread.
 
 const fs = require('node:fs');
 const { log } = require('../lib/logger');
 
 const BLOCK_MS = 200;
 
-log('SYNC', 'Start fs.readFile (praca leci w tle na wątku z thread poola)');
+log('SYNC', 'Starting fs.readFile (work runs in the background on a thread pool thread)');
 
 fs.readFile(__filename, () => {
-  log('THREADPOOL', 'Callback fs.readFile — czas bliski końcowi blokady => odczyt działał w tle');
+  log('THREADPOOL', 'fs.readFile callback — time close to the end of the block => the read ran in the background');
 });
 
-log('SYNC', `Blokujemy główny wątek na ${BLOCK_MS}ms synchroniczną pętlą...`);
+log('SYNC', `Blocking the main thread for ${BLOCK_MS}ms with a synchronous loop...`);
 const blockUntil = Date.now() + BLOCK_MS;
 while (Date.now() < blockUntil) {
-  // celowe zajęcie CPU na głównym wątku
+  // deliberately hogging the main thread's CPU
 }
-log('SYNC', 'Koniec blokady głównego wątku');
+log('SYNC', 'End of main thread block');

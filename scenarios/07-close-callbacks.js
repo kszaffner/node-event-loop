@@ -1,32 +1,32 @@
 'use strict';
 
-// Pokazuje fazę "Close callbacks" — wykonuje się na samym końcu iteracji
-// pętli, po zniszczeniu uchwytu (np. socketu). Dodatkowo pokazuje
-// process.on('exit'), który odpala się dopiero gdy event loop nie ma
-// już nic do zrobienia.
+// Shows the "Close callbacks" phase — runs at the very end of a loop
+// iteration, after a handle (e.g. a socket) is destroyed. Also shows
+// process.on('exit'), which fires only once the event loop has nothing
+// left to do.
 
 const net = require('node:net');
 const { log } = require('../lib/logger');
 
 process.on('exit', () => {
-  log('EXIT', "process.on('exit') — ostatnia rzecz, jaka się wykona");
+  log('EXIT', "process.on('exit') — the very last thing that runs");
 });
 
 const server = net.createServer((socket) => {
-  log('POLL', 'Serwer: klient połączony');
+  log('POLL', 'Server: client connected');
   socket.destroy();
 });
 
 server.listen(0, () => {
   const { port } = server.address();
-  log('SYNC', `Serwer nasłuchuje na porcie ${port}, łączymy klienta...`);
+  log('SYNC', `Server listening on port ${port}, connecting a client...`);
 
   const client = net.connect(port, () => {
-    log('POLL', 'Klient: połączono z serwerem');
+    log('POLL', 'Client: connected to server');
   });
 
   client.on('close', () => {
-    log('CLOSE', "socket.on('close') — faza Close callbacks");
+    log('CLOSE', "socket.on('close') — Close callbacks phase");
     server.close();
   });
 });

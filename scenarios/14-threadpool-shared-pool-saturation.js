@@ -1,32 +1,32 @@
 'use strict';
 
-// NAJWAŻNIEJSZY scenariusz sekcji D: pokazuje, że fs, crypto, zlib i
-// dns.lookup dzielą JEDNĄ, wspólną pulę wątków (domyślnie 4 — zmienna
-// środowiskowa UV_THREADPOOL_SIZE). Wypełniamy całą pulę czterema
-// długimi operacjami crypto.pbkdf2, a następnie zlecamy PIĄTĄ operację
-// z tej samej puli (fs.readFile) — mimo że sam odczyt pliku jest
-// błyskawiczny, musi poczekać w kolejce aż zwolni się jakiś wątek.
+// THE key scenario of section D: shows that fs, crypto, zlib and
+// dns.lookup all share ONE common thread pool (default size 4 — the
+// UV_THREADPOOL_SIZE environment variable). We fill the entire pool with
+// four long crypto.pbkdf2 jobs, then schedule a FIFTH job from the same
+// pool (fs.readFile) — even though the file read itself is instant, it
+// has to wait in the queue until a thread frees up.
 //
-// Porównaj z uruchomieniem: UV_THREADPOOL_SIZE=8 node scenarios/14-threadpool-shared-pool-saturation.js
-// — przy większej puli fs.readFile NIE czeka w kolejce.
+// Compare with running: UV_THREADPOOL_SIZE=8 node scenarios/14-threadpool-shared-pool-saturation.js
+// — with a bigger pool, fs.readFile does NOT wait in the queue.
 
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const { log } = require('../lib/logger');
 
 const ITERATIONS = 300000;
-const POOL_JOBS = 4; // domyślny rozmiar thread poola
+const POOL_JOBS = 4; // default thread pool size
 
-log('SYNC', `Wypełniamy pulę ${POOL_JOBS} długimi zadaniami crypto.pbkdf2...`);
+log('SYNC', `Filling the pool with ${POOL_JOBS} long crypto.pbkdf2 jobs...`);
 
 for (let i = 1; i <= POOL_JOBS; i += 1) {
-  crypto.pbkdf2('haslo', `sol-${i}`, ITERATIONS, 64, 'sha512', () => {
-    log('THREADPOOL', `pbkdf2 #${i} (wypełnia pulę) zakończone`);
+  crypto.pbkdf2('password', `salt-${i}`, ITERATIONS, 64, 'sha512', () => {
+    log('THREADPOOL', `pbkdf2 #${i} (filling the pool) finished`);
   });
 }
 
-log('SYNC', 'Dodatkowo zlecamy szybki fs.readFile — powinien czekać w kolejce na wolny wątek');
+log('SYNC', 'Also scheduling a quick fs.readFile — it should wait in the queue for a free thread');
 
 fs.readFile(__filename, () => {
-  log('THREADPOOL', 'fs.readFile zakończony — porównaj czas z pbkdf2, mimo że sam odczyt jest błyskawiczny');
+  log('THREADPOOL', 'fs.readFile finished — compare the timing with pbkdf2, even though the read itself is instant');
 });

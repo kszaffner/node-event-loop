@@ -1,13 +1,14 @@
 'use strict';
 
-// crypto.pbkdf2 (async) to operacja CPU-bound wykonywana na thread poolu.
-// Żeby to pokazać, w trakcie liczenia hasha tykamy setIntervalem co 20ms —
-// jeśli tyknięcia pojawiają się regularnie PODCZAS liczenia, to znaczy że
-// główny wątek jest wolny, a ciężka praca leci na wątku z puli.
+// crypto.pbkdf2 (async) is a CPU-bound operation run on the thread pool.
+// To show this, we tick a setInterval every 20ms while the hash is being
+// computed — if ticks keep showing up regularly WHILE it's computing,
+// that means the main thread is free and the heavy work is running on a
+// pool thread.
 //
-// Dla porównania spróbuj podmienić na crypto.pbkdf2Sync — wtedy tyknięcia
-// interwału w ogóle się nie pojawią, dopóki liczenie się nie skończy,
-// bo pbkdf2Sync blokuje główny wątek całkowicie.
+// For comparison, try swapping in crypto.pbkdf2Sync — then the interval
+// ticks won't show up at all until the computation is done, because
+// pbkdf2Sync blocks the main thread completely.
 
 const crypto = require('node:crypto');
 const { log } = require('../lib/logger');
@@ -17,13 +18,13 @@ const ITERATIONS = 300000;
 let ticks = 0;
 const interval = setInterval(() => {
   ticks += 1;
-  log('SYNC', `tyknięcie interwału #${ticks} (główny wątek wolny mimo trwającego pbkdf2)`);
+  log('SYNC', `interval tick #${ticks} (main thread free despite pbkdf2 running)`);
 }, 20);
 
-log('SYNC', 'Start crypto.pbkdf2 (async, thread pool)...');
+log('SYNC', 'Starting crypto.pbkdf2 (async, thread pool)...');
 
-crypto.pbkdf2('haslo', 'sol', ITERATIONS, 64, 'sha512', (err, derivedKey) => {
+crypto.pbkdf2('password', 'salt', ITERATIONS, 64, 'sha512', (err, derivedKey) => {
   if (err) throw err;
   clearInterval(interval);
-  log('THREADPOOL', `crypto.pbkdf2 zakończone, klucz: ${derivedKey.toString('hex').slice(0, 16)}...`);
+  log('THREADPOOL', `crypto.pbkdf2 finished, key: ${derivedKey.toString('hex').slice(0, 16)}...`);
 });

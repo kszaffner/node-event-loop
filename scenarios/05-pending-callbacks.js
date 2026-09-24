@@ -1,23 +1,24 @@
 'use strict';
 
-// Pokazuje fazę "Pending callbacks" — mniej znaną fazę event loopa, która
-// wykonuje callbacki niektórych błędów I/O odroczone z poprzedniej iteracji
-// pętli (np. ECONNREFUSED przy próbie połączenia TCP na niesłuchający port).
+// Shows the "Pending callbacks" phase — a lesser-known event loop phase
+// that runs callbacks for certain I/O errors deferred from the previous
+// loop iteration (e.g. ECONNREFUSED when trying to open a TCP connection
+// to a port nobody is listening on).
 //
-// UWAGA: Node.js nie udostępnia z poziomu JS informacji "w jakiej fazie
-// właśnie jesteśmy" — etykieta PENDING poniżej to nasza adnotacja dydaktyczna
-// oparta na udokumentowanym zachowaniu libuv, a nie coś zmierzone w runtime.
-// To dotyczy zresztą wszystkich etykiet faz w tym projekcie: logger loguje
-// to, co MY wiemy że zaplanowaliśmy (setTimeout -> Timers, setImmediate ->
-// Check, itd.), nie odczytuje stanu libuv.
+// NOTE: Node.js does not expose "which phase are we in right now" to JS.
+// The PENDING label below is our own didactic annotation based on
+// documented libuv behavior, not something measured at runtime. This
+// applies to every phase label in this project: the logger logs what WE
+// know we scheduled (setTimeout -> Timers, setImmediate -> Check, etc.),
+// it does not read libuv's internal state.
 
 const net = require('node:net');
 const { log } = require('../lib/logger');
 
-log('SYNC', 'Próba połączenia z portem, na którym nikt nie nasłuchuje...');
+log('SYNC', 'Trying to connect to a port nobody is listening on...');
 
 const socket = net.connect({ port: 9, host: '127.0.0.1' });
 
 socket.on('error', (err) => {
-  log('PENDING', `błąd połączenia odroczony do fazy Pending callbacks: ${err.code}`);
+  log('PENDING', `connection error deferred to the Pending callbacks phase: ${err.code}`);
 });

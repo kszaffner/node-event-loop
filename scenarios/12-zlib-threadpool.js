@@ -1,9 +1,8 @@
 'use strict';
 
-// zlib (async gzip) to kolejna operacja wykonywana na thread poolu.
-// Ten sam trick co w scenariuszu 11: tykamy interwałem podczas kompresji
-// dużego bufora, żeby pokazać że główny wątek jest wolny mimo trwającej
-// pracy CPU-bound w tle.
+// zlib (async gzip) is another operation run on the thread pool. Same
+// trick as scenario 11: tick an interval while compressing a large
+// buffer, to show the main thread stays free during the CPU-bound work.
 
 const zlib = require('node:zlib');
 const { log } = require('../lib/logger');
@@ -13,13 +12,13 @@ const buffer = Buffer.alloc(50 * 1024 * 1024, 'a');
 let ticks = 0;
 const interval = setInterval(() => {
   ticks += 1;
-  log('SYNC', `tyknięcie interwału #${ticks} (główny wątek wolny mimo trwającej kompresji)`);
+  log('SYNC', `interval tick #${ticks} (main thread free despite compression running)`);
 }, 20);
 
-log('SYNC', 'Start zlib.gzip (async, thread pool) na 50MB bufora...');
+log('SYNC', 'Starting zlib.gzip (async, thread pool) on a 50MB buffer...');
 
 zlib.gzip(buffer, (err, compressed) => {
   if (err) throw err;
   clearInterval(interval);
-  log('THREADPOOL', `Kompresja zakończona: ${buffer.length} -> ${compressed.length} bajtów`);
+  log('THREADPOOL', `Compression finished: ${buffer.length} -> ${compressed.length} bytes`);
 });
