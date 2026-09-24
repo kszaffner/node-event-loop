@@ -1,0 +1,15 @@
+{
+  "name": "node-event-loop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scenariusze pokazujące krok po kroku jak działa event loop i thread pool w Node.js",
+  "scripts": {
+    "scenario:01": "node scenarios/01-sync-nexttick-promise-macrotask.js",
+    "scenario:02": "node scenarios/02-nexttick-vs-promise-priority.js",
+    "scenario:03": "node scenarios/03-timers-basic.js",
+    "scenario:04": "node scenarios/04-timeout0-vs-immediate.js",
+    "scenario:05": "node scenarios/05-pending-callbacks.js",
+    "scenario:06": "node scenarios/06-poll-phase-io.js",
+    "scenario:07": "node scenarios/07-close-callbacks.js"
+  }
+}
