@@ -1,0 +1,27 @@
+{
+  "name": "node-event-loop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scenarios showing step by step how the event loop and thread pool work in Node.js",
+  "scripts": {
+    "scenario:01": "node scenarios/01-sync-nexttick-promise-macrotask.js",
+    "scenario:02": "node scenarios/02-nexttick-vs-promise-priority.js",
+    "scenario:03": "node scenarios/03-timers-basic.js",
+    "scenario:04": "node scenarios/04-timeout0-vs-immediate.js",
+    "scenario:05": "node scenarios/05-pending-callbacks.js",
+    "scenario:06": "node scenarios/06-poll-phase-io.js",
+    "scenario:07": "node scenarios/07-close-callbacks.js",
+    "scenario:08": "node scenarios/08-network-io-os.js",
+    "scenario:09": "node scenarios/09-dns-resolve-vs-lookup.js",
+    "scenario:10": "node scenarios/10-fs-readfile-threadpool-proof.js",
+    "scenario:11": "node scenarios/11-crypto-pbkdf2-threadpool.js",
+    "scenario:12": "node scenarios/12-zlib-threadpool.js",
+    "scenario:13": "node scenarios/13-dns-lookup-threadpool.js",
+    "scenario:14": "node scenarios/14-threadpool-shared-pool-saturation.js",
+    "scenario:15": "node scenarios/15-event-loop-starvation.js",
+    "scenario:16": "node scenarios/16-blocking-the-event-loop.js",
+    "scenario:17": "node scenarios/17-worker-threads-vs-threadpool.js",
+    "scenario:18": "node scenarios/18-queue-microtask.js",
+    "scenario:19": "node scenarios/19-everything-together.js"
+  }
+}
