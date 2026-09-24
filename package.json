@@ -17,6 +17,11 @@
     "scenario:11": "node scenarios/11-crypto-pbkdf2-threadpool.js",
     "scenario:12": "node scenarios/12-zlib-threadpool.js",
     "scenario:13": "node scenarios/13-dns-lookup-threadpool.js",
-    "scenario:14": "node scenarios/14-threadpool-shared-pool-saturation.js"
+    "scenario:14": "node scenarios/14-threadpool-shared-pool-saturation.js",
+    "scenario:15": "node scenarios/15-event-loop-starvation.js",
+    "scenario:16": "node scenarios/16-blocking-the-event-loop.js",
+    "scenario:17": "node scenarios/17-worker-threads-vs-threadpool.js",
+    "scenario:18": "node scenarios/18-queue-microtask.js",
+    "scenario:19": "node scenarios/19-everything-together.js"
   }
 }
