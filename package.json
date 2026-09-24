@@ -10,6 +10,13 @@
     "scenario:04": "node scenarios/04-timeout0-vs-immediate.js",
     "scenario:05": "node scenarios/05-pending-callbacks.js",
     "scenario:06": "node scenarios/06-poll-phase-io.js",
-    "scenario:07": "node scenarios/07-close-callbacks.js"
+    "scenario:07": "node scenarios/07-close-callbacks.js",
+    "scenario:08": "node scenarios/08-network-io-os.js",
+    "scenario:09": "node scenarios/09-dns-resolve-vs-lookup.js",
+    "scenario:10": "node scenarios/10-fs-readfile-threadpool-proof.js",
+    "scenario:11": "node scenarios/11-crypto-pbkdf2-threadpool.js",
+    "scenario:12": "node scenarios/12-zlib-threadpool.js",
+    "scenario:13": "node scenarios/13-dns-lookup-threadpool.js",
+    "scenario:14": "node scenarios/14-threadpool-shared-pool-saturation.js"
   }
 }
