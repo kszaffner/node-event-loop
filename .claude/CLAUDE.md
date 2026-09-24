@@ -1,24 +1,25 @@
 # node-event-loop
 
-Projekt edukacyjny w Node.js pokazujący krok po kroku jak działa **event loop** i **thread pool** (libuv). Celem nie jest gotowa aplikacja produkcyjna, tylko zestaw uruchamialnych scenariuszy, które logują *kiedy* i *w jakiej fazie event loopa* wykonuje się dany kod.
+An educational Node.js project showing, step by step, how the **event loop** and **thread pool** (libuv) work. The goal isn't a production-ready app, just a set of runnable scenarios that log *when* and *in which event loop phase* a given piece of code executes.
 
 ## Status
 
-Sekcje A (nextTick/promise), B (fazy event loopa), C (I/O przez OS) i D (thread pool) mają zaimplementowane scenariusze w `scenarios/`. Pełna lista zaplanowanych scenariuszy (w tym E — scenariusz łączony) ustalana jest w sesji planistycznej z użytkownikiem — nie zgaduj kolejnych scenariuszy bez ustalenia.
+Sections A (nextTick/promise), B (event loop phases), C (OS-level I/O), D (thread pool), and E (starvation, blocking, worker_threads, combined finale) all have implemented scenarios under `scenarios/`. Any further scenarios are decided together with the user in a planning session — don't invent new ones without agreeing on them first.
 
-## Konwencja logowania
+## Logging convention
 
-Format ustalony w `lib/logger.js`: `[+<ms>ms] [<PHASE>] <message>` — pozwala odpowiedzieć na trzy pytania: *co się wykonało*, *w jakiej fazie/kolejce event loopa*, *o której (względem startu skryptu)*. Nie wprowadzaj innego formatu bez ustalenia z użytkownikiem.
+Format defined in `lib/logger.js`: `[+<ms>ms] [<PHASE>] <message>` — this answers three questions: *what ran*, *in which event loop phase/queue*, *at what elapsed time (since script start)*. Don't introduce a different format without checking with the user.
 
-Etykiety faz (SYNC, NEXTTICK, MICROTASK, TIMERS, PENDING, POLL, CHECK, THREADPOOL, OS-IO, CLOSE, EXIT) to nasza dydaktyczna adnotacja oparta na udokumentowanym zachowaniu libuv/Node — Node nie eksponuje z poziomu JS informacji "w jakiej fazie właśnie jesteśmy". Nie twórz wrażenia, że logger to mierzy w runtime.
+Phase labels (SYNC, NEXTTICK, MICROTASK, TIMERS, PENDING, POLL, CHECK, THREADPOOL, OS-IO, CLOSE, EXIT, WORKER) are our own didactic annotation based on documented libuv/Node behavior — Node does not expose "which phase are we in right now" to JS. Don't give the impression the logger measures this at runtime.
 
-## Jak uruchamiać
+## How to run
 
-`npm run scenario:NN` albo bezpośrednio `node scenarios/NN-nazwa.js`. Numeracja plików w `scenarios/` odpowiada kolejności sekcji planu (A/B/C/D/...).
+`npm run scenario:NN` or directly `node scenarios/NN-name.js`. File numbering under `scenarios/` follows the order of the plan's sections (A/B/C/D/E).
 
-## Zasady pracy w tym repo
+## Working rules in this repo
 
-- To jest projekt edukacyjny — priorytetem jest czytelność logów i kodu nad wydajnością czy abstrakcjami.
-- Nie dodawaj frameworków (Express, Next.js itp.) — to demo ma pokazywać czysty Node.js runtime.
-- Zmiany w architekturze/scenariuszach ustalamy w sesji planistycznej, nie implementujemy ad-hoc.
-- **Komentarze i komunikaty w kodzie (logi, treść scenariuszy) piszemy po angielsku.** Rozmowa z użytkownikiem może być po polsku, ale kod ma być czytelny dla każdego.
+- This is an educational project — readability of logs and code takes priority over performance or abstractions.
+- Don't add frameworks (Express, Next.js, etc.) — this demo is meant to show plain Node.js runtime behavior.
+- Architecture/scenario changes are agreed on in a planning session, not implemented ad hoc.
+- **All project text is in English** — code, comments, log messages, docs, commit messages, PR descriptions. The conversation with the user may be in another language, but everything written into the codebase is English.
+- **Never push directly to `main`.** Always work on a feature branch and open a PR, even from an isolated worktree session.

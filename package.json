@@ -2,7 +2,7 @@
   "name": "node-event-loop",
   "version": "0.1.0",
   "private": true,
-  "description": "Scenariusze pokazujące krok po kroku jak działa event loop i thread pool w Node.js",
+  "description": "Scenarios showing step by step how the event loop and thread pool work in Node.js",
   "scripts": {
     "scenario:01": "node scenarios/01-sync-nexttick-promise-macrotask.js",
     "scenario:02": "node scenarios/02-nexttick-vs-promise-priority.js",

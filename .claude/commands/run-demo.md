@@ -1,10 +1,10 @@
 ---
-description: Uruchamia wybrany scenariusz event loop / thread pool i tłumaczy log wykonania
+description: Runs a chosen event loop / thread pool scenario and explains the execution log
 ---
 
-Uruchom scenariusz podany w argumencie (`$ARGUMENTS`) poleceniem `node`. Jeśli argument jest pusty, zapytaj użytkownika który scenariusz uruchomić (na razie brak zaimplementowanych scenariuszy — poinformuj o tym).
+Run the scenario given in the argument (`$ARGUMENTS`) with `node`. If the argument is empty, ask the user which scenario to run (list the files under `scenarios/`).
 
-Po uruchomieniu:
-1. Pokaż surowy output logów.
-2. Krótko wyjaśnij kolejność wykonania w odniesieniu do faz event loopa (microtasks, timers, I/O callbacks, check, close callbacks, thread pool) — tylko na podstawie tego co faktycznie pojawiło się w logu, nie zgaduj.
-3. Nie modyfikuj kodu scenariusza w ramach tej komendy — to komenda do obserwacji, nie do developmentu.
+After running it:
+1. Show the raw log output.
+2. Briefly explain the execution order in terms of event loop phases (microtasks, timers, I/O callbacks, check, close callbacks, thread pool) — based only on what actually appeared in the log, don't guess.
+3. Don't modify the scenario's code as part of this command — this command is for observing, not developing.
